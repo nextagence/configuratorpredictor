@@ -136,7 +136,7 @@
   <div class="panel">
     <h1>Predictor Configurator</h1>
     <div class="subtitle">
-      Choose language, currency and spin rules. The configurator will generate a clean HTML predictor file.
+      Choose language, currency, minimum total bet and spin rules. The configurator will output a ready-to-use HTML file.
     </div>
 
     <div class="grid">
@@ -150,7 +150,7 @@
       </div>
 
       <div class="field">
-        <label for="currency">Currency code (e.g. MAD, NGN, PEN)</label>
+        <label for="currency">Currency code (MAD, NGN, PEN…)</label>
         <input id="currency" type="text" value="MAD" maxlength="6" />
       </div>
 
@@ -173,19 +173,24 @@
         <label for="maxSpins">Max spins for low bets</label>
         <input id="maxSpins" type="number" value="7" min="1" />
       </div>
+
+      <div class="field">
+        <label for="minTotal">Min total bet per line</label>
+        <input id="minTotal" type="number" value="3" min="1" />
+      </div>
     </div>
 
     <button class="btn" id="generate">Generate predictor code</button>
 
     <div class="output-wrap">
-      <textarea id="codeOutput" placeholder="Generated predictor code will appear here..."></textarea>
+      <textarea id="codeOutput" placeholder="Generated predictor HTML will appear here..."></textarea>
       <div class="actions">
         <div>
           <button class="small-btn primary" id="copyBtn">Copy code</button>
           <button class="small-btn" id="downloadBtn" style="display:none;">Download .html</button>
         </div>
         <div class="hint">
-          Paste the code into any .html file (or just upload it to Vercel) — no extra CSS or JS needed.
+          Paste the code into any .html file and deploy. It already contains CSS + JS inside.
         </div>
       </div>
     </div>
@@ -194,335 +199,227 @@
 
 <script>
 (function(){
-
-  const translations = {
-    en: {
-      langAttr: 'en',
-      dir: 'ltr',
-      title: 'Bet Pattern Generator',
-      subtitle: 'Random bet amounts and spins. If the total bet is high, only 1 spin is used.',
-      budgetLabel: 'Budget',
-      buttonText: 'Get strategy',
-      totalBetLabel: 'Total bet:',
-      spinsLabel: 'Spins:',
-      footerPrefix: 'Total:',
-      footerBudgetLabel: 'Budget',
-      alertBudget: 'Please enter a valid budget.'
+  var translations = {
+    en:{
+      langAttr:'en', dir:'ltr',
+      title:'Bet Pattern Generator',
+      subtitle:'Random bet amounts and spins. If the total bet is high, only 1 spin is used.',
+      budgetLabel:'Budget',
+      buttonText:'Get strategy',
+      totalBetLabel:'Total bet:',
+      spinsLabel:'Spins:',
+      footerPrefix:'Total:',
+      footerBudgetLabel:'Budget',
+      alertBudget:'Please enter a valid budget.'
     },
-    es: {
-      langAttr: 'es',
-      dir: 'ltr',
-      title: 'Generador de patrón de apuestas',
-      subtitle: 'Importes de apuestas y número de giros aleatorios. Si la apuesta total es alta, solo se usa 1 giro.',
-      budgetLabel: 'Presupuesto',
-      buttonText: 'Obtener estrategia',
-      totalBetLabel: 'Apuesta total:',
-      spinsLabel: 'Giros:',
-      footerPrefix: 'Total:',
-      footerBudgetLabel: 'Presupuesto',
-      alertBudget: 'Introduce un presupuesto válido.'
+    es:{
+      langAttr:'es', dir:'ltr',
+      title:'Generador de patrón de apuestas',
+      subtitle:'Importes de apuestas y número de giros aleatorios. Si la apuesta total es alta, solo se usa 1 giro.',
+      budgetLabel:'Presupuesto',
+      buttonText:'Obtener estrategia',
+      totalBetLabel:'Apuesta total:',
+      spinsLabel:'Giros:',
+      footerPrefix:'Total:',
+      footerBudgetLabel:'Presupuesto',
+      alertBudget:'Introduce un presupuesto válido.'
     },
-    ar: {
-      langAttr: 'ar',
-      dir: 'rtl',
-      title: 'مولّد نمط الرهانات',
-      subtitle: 'مبالغ رهان عشوائية وعدد لفّات متغيّر. إذا كان إجمالي الرهان كبيرًا، يتم استخدام لفّة واحدة فقط.',
-      budgetLabel: 'الميزانية',
-      buttonText: 'الحصول على الإستراتيجية',
-      totalBetLabel: 'إجمالي الرهان:',
-      spinsLabel: 'عدد اللفات:',
-      footerPrefix: 'الإجمالي:',
-      footerBudgetLabel: 'الميزانية',
-      alertBudget: 'أدخل ميزانية صحيحة من فضلك.'
+    ar:{
+      langAttr:'ar', dir:'rtl',
+      title:'مولّد نمط الرهانات',
+      subtitle:'مبالغ رهان عشوائية وعدد لفّات متغيّر. إذا كان إجمالي الرهان كبيرًا، يتم استخدام لفّة واحدة فقط.',
+      budgetLabel:'الميزانية',
+      buttonText:'الحصول على الإستراتيجية',
+      totalBetLabel:'إجمالي الرهان:',
+      spinsLabel:'عدد اللفات:',
+      footerPrefix:'الإجمالي:',
+      footerBudgetLabel:'الميزانية',
+      alertBudget:'أدخل ميزانية صحيحة من فضلك.'
     }
   };
 
-  function buildPredictorCode(lang, currency, defaultBudget, highThreshold, minSpins, maxSpins){
-    const t = translations[lang] || translations.en;
+  function buildPredictorCode(lang, currency, defaultBudget, highThreshold, minSpins, maxSpins, minTotal){
+    var t = translations[lang] || translations.en;
+    currency = currency.toUpperCase();
 
-    const code = `<!doctype html>
-<html lang="${t.langAttr}" dir="${t.dir}">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>${t.title}</title>
-  <style>
-    :root{
-      --bg:#071427;
-      --panel:#0f1724;
-      --accent:#18a0fb;
-      --muted:#9fb0c9;
-    }
-    html,body{
-      margin:0;
-      height:100%;
-      background:#071427;
-      color:#e6eef8;
-      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      -webkit-font-smoothing:antialiased;
-    }
-    .wrap{
-      min-height:100%;
-      display:flex;
-      justify-content:center;
-      padding:16px;
-    }
-    .panel{
-      width:100%;
-      max-width:420px;
-      background:#0f1724;
-      border-radius:16px;
-      padding:18px 16px 20px;
-      box-shadow:0 10px 40px rgba(0,0,0,.7);
-    }
-    h1{
-      margin:0;
-      font-size:19px;
-      color:var(--accent);
-    }
-    .subtitle{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:4px;
-      line-height:1.5;
-    }
-    .controls{
-      margin-top:16px;
-      display:flex;
-      gap:10px;
-      align-items:flex-end;
-      flex-wrap:wrap;
-    }
-    label{
-      font-size:13px;
-      font-weight:600;
-      color:var(--muted);
-      margin-bottom:4px;
-    }
-    input[type=number]{
-      padding:11px 10px;
-      border-radius:10px;
-      background:var(--panel);
-      border:1px solid rgba(255,255,255,.06);
-      color:#e5e7eb;
-      font-weight:600;
-      width:140px;
-      font-size:14px;
-    }
-    input:focus{
-      outline:none;
-      box-shadow:0 0 0 1px var(--accent);
-    }
-    .btn{
-      padding:12px 16px;
-      border:none;
-      border-radius:12px;
-      background:linear-gradient(180deg,var(--accent),#0b84d6);
-      color:#042129;
-      font-weight:700;
-      cursor:pointer;
-      font-size:15px;
-      width:100%;
-    }
-    .btn:active{transform:translateY(1px);}
-    .output{
-      margin-top:18px;
-      padding:14px 10px 6px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.02);
-      display:none;
-    }
-    .list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .item{
-      padding:10px 12px;
-      border-radius:12px;
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.05);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    .label{
-      font-size:15px;
-      font-weight:800;
-      color:#ffffff;
-    }
-    .meta{
-      font-size:13px;
-      color:#dbeafe;
-      font-weight:700;
-      background:rgba(24,160,251,0.12);
-      border-radius:999px;
-      padding:4px 10px;
-      white-space:nowrap;
-    }
-    .footer{
-      text-align:center;
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-    }
-    @media(max-width:600px){
-      .wrap{padding:12px;}
-      .panel{padding:16px 14px 18px;}
-      h1{font-size:18px;}
-      .controls{flex-direction:column;align-items:stretch;}
-      input[type=number]{width:100%;}
-      .btn{width:100%;font-size:16px;padding:13px 16px;}
-      .item{padding:10px;}
-      .label{font-size:15px;}
-      .meta{font-size:13px;}
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="panel">
-      <h1>${t.title}</h1>
-      <div class="subtitle">${t.subtitle}</div>
+    var lines = [];
 
-      <div class="controls">
-        <div style="display:flex;flex-direction:column;width:100%;">
-          <label for="budget">${t.budgetLabel} (${currency})</label>
-          <input id="budget" type="number" value="${defaultBudget}" min="1" />
-        </div>
-        <button id="gen" class="btn">${t.buttonText}</button>
-      </div>
+    lines.push('<!doctype html>');
+    lines.push('<html lang="'+t.langAttr+'" dir="'+t.dir+'">');
+    lines.push('<head>');
+    lines.push('  <meta charset="utf-8" />');
+    lines.push('  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />');
+    lines.push('  <title>'+t.title+'</title>');
+    lines.push('  <style>');
+    lines.push('    :root{--bg:#071427;--panel:#0f1724;--accent:#18a0fb;--muted:#9fb0c9;}');
+    lines.push('    html,body{margin:0;height:100%;background:#071427;color:#e6eef8;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;}');
+    lines.push('    .wrap{min-height:100%;display:flex;justify-content:center;padding:16px;}');
+    lines.push('    .panel{width:100%;max-width:420px;background:#0f1724;border-radius:16px;padding:18px 16px 20px;box-shadow:0 10px 40px rgba(0,0,0,.7);}');
+    lines.push('    h1{margin:0;font-size:19px;color:var(--accent);}');
+    lines.push('    .subtitle{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;}');
+    lines.push('    .controls{margin-top:16px;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}');
+    lines.push('    label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px;}');
+    lines.push('    input[type=number]{padding:11px 10px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,.06);color:#e5e7eb;font-weight:600;width:140px;font-size:14px;}');
+    lines.push('    input:focus{outline:none;box-shadow:0 0 0 1px var(--accent);}');
+    lines.push('    .btn{padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(180deg,var(--accent),#0b84d6);color:#042129;font-weight:700;cursor:pointer;font-size:15px;width:100%;}');
+    lines.push('    .btn:active{transform:translateY(1px);}');
+    lines.push('    .output{margin-top:18px;padding:14px 10px 6px;border-radius:14px;background:rgba(255,255,255,0.02);display:none;}');
+    lines.push('    .list{display:flex;flex-direction:column;gap:10px;}');
+    lines.push('    .item{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;}');
+    lines.push('    .label{font-size:15px;font-weight:800;color:#ffffff;}');
+    lines.push('    .meta{font-size:13px;color:#dbeafe;font-weight:700;background:rgba(24,160,251,0.12);border-radius:999px;padding:4px 10px;white-space:nowrap;}');
+    lines.push('    .footer{text-align:center;margin-top:10px;font-size:12px;color:var(--muted);}');
+    lines.push('    @media(max-width:600px){.wrap{padding:12px}.panel{padding:16px 14px 18px}h1{font-size:18px}.controls{flex-direction:column;align-items:stretch}input[type=number]{width:100%}.btn{width:100%;font-size:16px;padding:13px 16px}.item{padding:10px}.label{font-size:15px}.meta{font-size:13px}}');
+    lines.push('  </style>');
+    lines.push('</head>');
+    lines.push('<body>');
+    lines.push('  <div class="wrap">');
+    lines.push('    <div class="panel">');
+    lines.push('      <h1>'+t.title+'</h1>');
+    lines.push('      <div class="subtitle">'+t.subtitle+'</div>');
+    lines.push('      <div class="controls">');
+    lines.push('        <div style="display:flex;flex-direction:column;width:100%;">');
+    lines.push('          <label for="budget">'+t.budgetLabel+' ('+currency+')</label>');
+    lines.push('          <input id="budget" type="number" value="'+defaultBudget+'" min="1" />');
+    lines.push('        </div>');
+    lines.push('        <button id="gen" class="btn">'+t.buttonText+'</button>');
+    lines.push('      </div>');
+    lines.push('      <div id="output" class="output">');
+    lines.push('        <div id="list" class="list"></div>');
+    lines.push('        <div id="footer" class="footer"></div>');
+    lines.push('      </div>');
+    lines.push('    </div>');
+    lines.push('  </div>');
+    lines.push('');
+    lines.push('  <script>');
+    lines.push('  (function(){');
+    lines.push('    var CURRENCY = "'+currency+'";');
+    lines.push('    var HIGH_BET_THRESHOLD = '+highThreshold+';');
+    lines.push('    var MIN_SPINS = '+minSpins+';');
+    lines.push('    var MAX_SPINS = '+maxSpins+';');
+    lines.push('    var MIN_TOTAL_BET = '+minTotal+';');
+    lines.push('');
+    lines.push('    function randomUnique5(){');
+    lines.push('      var s = new Set();');
+    lines.push('      while(s.size < 5){');
+    lines.push('        s.add(Math.floor(Math.random()*100) + 10);');
+    lines.push('      }');
+    lines.push('      return Array.from(s);');
+    lines.push('    }');
+    lines.push('');
+    lines.push('    function computePattern(budget){');
+    lines.push('      var minTotal = MIN_TOTAL_BET;');
+    lines.push('      if(minTotal * 5 > budget){');
+    lines.push('        minTotal = Math.max(1, Math.floor(budget / 5));');
+    lines.push('      }');
+    lines.push('      var baseMinSum = minTotal * 5;');
+    lines.push('      var remaining = Math.max(0, budget - baseMinSum);');
+    lines.push('');
+    lines.push('      var raw = randomUnique5();');
+    lines.push('      var sumRaw = raw.reduce(function(a,b){return a+b;},0);');
+    lines.push('      var extra = raw.map(function(v){return remaining * v / sumRaw;});');
+    lines.push('      var extraRounded = extra.map(function(v){return Math.floor(v);});');
+    lines.push('      var diff = remaining - extraRounded.reduce(function(a,b){return a+b;},0);');
+    lines.push('');
+    lines.push('      while(diff > 0){');
+    lines.push('        var i = Math.floor(Math.random()*5);');
+    lines.push('        extraRounded[i]++;');
+    lines.push('        diff--;');
+    lines.push('      }');
+    lines.push('');
+    lines.push('      var totals = [];');
+    lines.push('      for(var j=0;j<5;j++){');
+    lines.push('        totals[j] = minTotal + extraRounded[j];');
+    lines.push('      }');
+    lines.push('');
+    lines.push('      var used = new Set();');
+    lines.push('      for(var k=0;k<5;k++){');
+    lines.push('        while(used.has(totals[k])){');
+    lines.push('          totals[k]++;');
+    lines.push('        }');
+    lines.push('        used.add(totals[k]);');
+    lines.push('      }');
+    lines.push('');
+    lines.push('      for(var n = totals.length - 1; n > 0; n--){');
+    lines.push('        var idx = Math.floor(Math.random()*(n+1));');
+    lines.push('        var tmp = totals[n];');
+    lines.push('        totals[n] = totals[idx];');
+    lines.push('        totals[idx] = tmp;');
+    lines.push('      }');
+    lines.push('      return totals;');
+    lines.push('    }');
+    lines.push('');
+    lines.push('    function generateSpins(sum){');
+    lines.push('      if(sum > HIGH_BET_THRESHOLD) return 1;');
+    lines.push('      return Math.floor(Math.random() * (MAX_SPINS - MIN_SPINS + 1)) + MIN_SPINS;');
+    lines.push('    }');
+    lines.push('');
+    lines.push('    function render(pattern, budget){');
+    lines.push('      var list = document.getElementById("list");');
+    lines.push('      var out = document.getElementById("output");');
+    lines.push('      var footer = document.getElementById("footer");');
+    lines.push('      list.innerHTML = "";');
+    lines.push('      for(var i=0;i<5;i++){');
+    lines.push('        var total = pattern[i];');
+    lines.push('        var spins = generateSpins(total);');
+    lines.push('        var div = document.createElement("div");');
+    lines.push('        div.className = "item";');
+    lines.push('        var label = document.createElement("div");');
+    lines.push('        label.className = "label";');
+    lines.push('        label.textContent = "'+t.totalBetLabel+' " + total + " " + CURRENCY;');
+    lines.push('        var meta = document.createElement("div");');
+    lines.push('        meta.className = "meta";');
+    lines.push('        meta.textContent = "'+t.spinsLabel+' " + spins;');
+    lines.push('        div.appendChild(label);');
+    lines.push('        div.appendChild(meta);');
+    lines.push('        list.appendChild(div);');
+    lines.push('      }');
+    lines.push('      var sumAll = pattern.reduce(function(a,b){return a+b;},0);');
+    lines.push('      footer.textContent = "'+t.footerPrefix+' " + sumAll + " " + CURRENCY + " — '+t.footerBudgetLabel+': " + budget + " " + CURRENCY;');
+    lines.push('      out.style.display = "block";');
+    lines.push('    }');
+    lines.push('');
+    lines.push('    document.getElementById("gen").addEventListener("click", function(){');
+    lines.push('      var budget = parseInt(document.getElementById("budget").value,10) || 0;');
+    lines.push('      if(budget <= 0){');
+    lines.push('        alert("'+t.alertBudget.replace(/"/g,'\\"')+'");');
+    lines.push('        return;');
+    lines.push('      }');
+    lines.push('      var pattern = computePattern(budget);');
+    lines.push('      render(pattern, budget);');
+    lines.push('    });');
+    lines.push('  })();');
+    lines.push('  <\\/script>');
+    lines.push('</body>');
+    lines.push('</html>');
 
-      <div id="output" class="output">
-        <div id="list" class="list"></div>
-        <div id="footer" class="footer"></div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    (function(){
-      var CURRENCY = "${currency}";
-      var HIGH_BET_THRESHOLD = ${highThreshold};
-      var MIN_SPINS = ${minSpins};
-      var MAX_SPINS = ${maxSpins};
-
-      function randomUnique5(){
-        var s = new Set();
-        while(s.size < 5){
-          s.add(Math.floor(Math.random()*100) + 10);
-        }
-        return Array.from(s);
-      }
-
-      function computePattern(budget){
-        var raw = randomUnique5();
-        var sumRaw = raw.reduce(function(a,b){ return a+b; }, 0);
-        var scaled = raw.map(function(v){ return v / sumRaw * budget; });
-        var rounded = scaled.map(function(v){ return Math.floor(v); });
-        var diff = budget - rounded.reduce(function(a,b){ return a+b; }, 0);
-
-        while(diff > 0){
-          var i = Math.floor(Math.random()*5);
-          rounded[i]++;
-          diff--;
-        }
-
-        var used = new Set();
-        for(var j=0;j<5;j++){
-          while(used.has(rounded[j])){
-            rounded[j]++;
-          }
-          used.add(rounded[j]);
-        }
-
-        for(var k=rounded.length-1;k>0;k--){
-          var idx = Math.floor(Math.random()*(k+1));
-          var tmp = rounded[k];
-          rounded[k] = rounded[idx];
-          rounded[idx] = tmp;
-        }
-        return rounded;
-      }
-
-      function generateSpins(sum){
-        if(sum > HIGH_BET_THRESHOLD) return 1;
-        return Math.floor(Math.random() * (MAX_SPINS - MIN_SPINS + 1)) + MIN_SPINS;
-      }
-
-      function render(pattern, budget){
-        var list = document.getElementById("list");
-        var out = document.getElementById("output");
-        var footer = document.getElementById("footer");
-
-        list.innerHTML = "";
-
-        for(var i=0;i<5;i++){
-          var total = pattern[i];
-          var spins = generateSpins(total);
-
-          var div = document.createElement("div");
-          div.className = "item";
-
-          var label = document.createElement("div");
-          label.className = "label";
-          label.textContent = "${t.totalBetLabel} " + total + " " + CURRENCY;
-
-          var meta = document.createElement("div");
-          meta.className = "meta";
-          meta.textContent = "${t.spinsLabel} " + spins;
-
-          div.appendChild(label);
-          div.appendChild(meta);
-          list.appendChild(div);
-        }
-
-        var totalAll = pattern.reduce(function(a,b){ return a+b; }, 0);
-        footer.textContent = "${t.footerPrefix} " + totalAll + " " + CURRENCY + " — ${t.footerBudgetLabel}: " + budget + " " + CURRENCY;
-
-        out.style.display = "block";
-      }
-
-      document.getElementById("gen").addEventListener("click", function(){
-        var budget = parseInt(document.getElementById("budget").value, 10) || 0;
-        if(budget <= 0){
-          alert("${t.alertBudget}");
-          return;
-        }
-        var pattern = computePattern(budget);
-        render(pattern, budget);
-      });
-    })();
-  </script>
-</body>
-</html>`;
-
-    return code;
+    return lines.join('\n');
   }
 
-  const generateBtn = document.getElementById('generate');
-  const output = document.getElementById('codeOutput');
-  const copyBtn = document.getElementById('copyBtn');
-  const downloadBtn = document.getElementById('downloadBtn');
+  var generateBtn = document.getElementById('generate');
+  var output = document.getElementById('codeOutput');
+  var copyBtn = document.getElementById('copyBtn');
+  var downloadBtn = document.getElementById('downloadBtn');
 
   generateBtn.addEventListener('click', function(){
-    const lang = document.getElementById('lang').value;
-    const currency = (document.getElementById('currency').value || 'USD').toUpperCase();
-    const defaultBudget = parseInt(document.getElementById('defaultBudget').value, 10) || 50;
-    const highThreshold = parseInt(document.getElementById('highThreshold').value, 10) || 15;
-    const minSpins = parseInt(document.getElementById('minSpins').value, 10) || 2;
-    const maxSpins = parseInt(document.getElementById('maxSpins').value, 10) || 7;
+    var lang = document.getElementById('lang').value;
+    var currency = (document.getElementById('currency').value || 'USD').toUpperCase();
+    var defaultBudget = parseInt(document.getElementById('defaultBudget').value,10) || 50;
+    var highThreshold = parseInt(document.getElementById('highThreshold').value,10) || 15;
+    var minSpins = parseInt(document.getElementById('minSpins').value,10) || 2;
+    var maxSpins = parseInt(document.getElementById('maxSpins').value,10) || 7;
+    var minTotal = parseInt(document.getElementById('minTotal').value,10) || 1;
 
-    const code = buildPredictorCode(lang, currency, defaultBudget, highThreshold, minSpins, maxSpins);
+    var code = buildPredictorCode(lang, currency, defaultBudget, highThreshold, minSpins, maxSpins, minTotal);
     output.value = code;
 
-    const blob = new Blob([code], {type:'text/html'});
-    const url = URL.createObjectURL(blob);
+    var blob = new Blob([code], {type:'text/html'});
+    var url = URL.createObjectURL(blob);
     downloadBtn.style.display = 'inline-block';
     downloadBtn.onclick = function(){
-      const a = document.createElement('a');
+      var a = document.createElement('a');
       a.href = url;
-      a.download = 'predictor_' + lang + '_' + currency + '.html';
+      a.download = 'predictor_'+lang+'_'+currency+'.html';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -532,7 +429,7 @@
   copyBtn.addEventListener('click', function(){
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(output.value || '');
-    } else {
+    }else{
       output.select();
       document.execCommand('copy');
     }
