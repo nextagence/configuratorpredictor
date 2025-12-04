@@ -1,133 +1,134 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Predictor Configurator</title>
-<style>
-  :root{
-    --bg:#020617;
-    --panel:#0f172a;
-    --accent:#22c55e;
-    --muted:#9ca3af;
-  }
-  html,body{
-    margin:0;
-    height:100%;
-    background:radial-gradient(circle at top,#1e293b,#020617);
-    color:#e5e7eb;
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{
-    min-height:100%;
-    display:flex;
-    justify-content:center;
-    padding:16px;
-  }
-  .panel{
-    width:100%;
-    max-width:960px;
-    background:rgba(15,23,42,0.96);
-    border-radius:16px;
-    padding:20px 18px 18px;
-    box-shadow:0 18px 60px rgba(0,0,0,.8);
-  }
-  h1{
-    margin:0 0 4px;
-    font-size:22px;
-    color:var(--accent);
-  }
-  .subtitle{
-    font-size:13px;
-    color:var(--muted);
-    margin-bottom:16px;
-  }
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:12px;
-  }
-  .field{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-  }
-  label{
-    font-size:13px;
-    color:var(--muted);
-    font-weight:600;
-  }
-  select,input{
-    border-radius:10px;
-    border:1px solid rgba(148,163,184,.4);
-    background:#020617;
-    color:#e5e7eb;
-    padding:8px 10px;
-    font-size:14px;
-  }
-  input:focus,select:focus{
-    outline:none;
-    box-shadow:0 0 0 1px var(--accent);
-  }
-  .btn{
-    margin-top:16px;
-    width:100%;
-    padding:11px 14px;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:#022c22;
-    font-weight:700;
-    cursor:pointer;
-    font-size:15px;
-  }
-  .btn:active{transform:translateY(1px)}
-  .output-wrap{
-    margin-top:18px;
-  }
-  textarea{
-    width:100%;
-    min-height:260px;
-    border-radius:12px;
-    border:1px solid rgba(148,163,184,.5);
-    background:#020617;
-    color:#e5e7eb;
-    padding:10px;
-    font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-    font-size:12px;
-    resize:vertical;
-  }
-  .actions{
-    margin-top:8px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:space-between;
-  }
-  .small-btn{
-    border:none;
-    border-radius:999px;
-    padding:6px 12px;
-    font-size:12px;
-    cursor:pointer;
-    background:#111827;
-    color:#e5e7eb;
-  }
-  .small-btn.primary{
-    background:#22c55e;
-    color:#022c22;
-    font-weight:600;
-  }
-  .hint{
-    font-size:11px;
-    color:var(--muted);
-  }
-  @media(max-width:768px){
-    .grid{grid-template-columns:1fr;}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Predictor Configurator</title>
+  <style>
+    :root{
+      --bg:#020617;
+      --panel:#0f172a;
+      --accent:#22c55e;
+      --muted:#9ca3af;
+    }
+    html,body{
+      margin:0;
+      height:100%;
+      background:radial-gradient(circle at top,#1e293b,#020617);
+      color:#e5e7eb;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    .wrap{
+      min-height:100%;
+      display:flex;
+      justify-content:center;
+      padding:16px;
+    }
+    .panel{
+      width:100%;
+      max-width:960px;
+      background:rgba(15,23,42,0.96);
+      border-radius:16px;
+      padding:20px 18px 18px;
+      box-shadow:0 18px 60px rgba(0,0,0,.8);
+    }
+    h1{
+      margin:0 0 4px;
+      font-size:22px;
+      color:var(--accent);
+    }
+    .subtitle{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:16px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    label{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+    select,input{
+      border-radius:10px;
+      border:1px solid rgba(148,163,184,.4);
+      background:#020617;
+      color:#e5e7eb;
+      padding:8px 10px;
+      font-size:14px;
+    }
+    input:focus,select:focus{
+      outline:none;
+      box-shadow:0 0 0 1px var(--accent);
+    }
+    .btn{
+      margin-top:16px;
+      width:100%;
+      padding:11px 14px;
+      border:none;
+      border-radius:12px;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      color:#022c22;
+      font-weight:700;
+      cursor:pointer;
+      font-size:15px;
+    }
+    .btn:active{transform:translateY(1px)}
+    .output-wrap{
+      margin-top:18px;
+    }
+    textarea{
+      width:100%;
+      min-height:260px;
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,.5);
+      background:#020617;
+      color:#e5e7eb;
+      padding:10px;
+      font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:12px;
+      resize:vertical;
+      white-space:pre;
+    }
+    .actions{
+      margin-top:8px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .small-btn{
+      border:none;
+      border-radius:999px;
+      padding:6px 12px;
+      font-size:12px;
+      cursor:pointer;
+      background:#111827;
+      color:#e5e7eb;
+    }
+    .small-btn.primary{
+      background:#22c55e;
+      color:#022c22;
+      font-weight:600;
+    }
+    .hint{
+      font-size:11px;
+      color:var(--muted);
+    }
+    @media(max-width:768px){
+      .grid{grid-template-columns:1fr;}
+    }
+  </style>
 </head>
 
 <body>
@@ -135,7 +136,7 @@
   <div class="panel">
     <h1>Predictor Configurator</h1>
     <div class="subtitle">
-      Choose language, currency and spin rules. Then generate a ready-to-use Sweet-style predictor page.
+      Choose language, currency and spin rules. The configurator will generate a clean HTML predictor file.
     </div>
 
     <div class="grid">
@@ -149,7 +150,7 @@
       </div>
 
       <div class="field">
-        <label for="currency">Currency code (e.g. MAD, NGN, USD)</label>
+        <label for="currency">Currency code (e.g. MAD, NGN, PEN)</label>
         <input id="currency" type="text" value="MAD" maxlength="6" />
       </div>
 
@@ -184,7 +185,7 @@
           <button class="small-btn" id="downloadBtn" style="display:none;">Download .html</button>
         </div>
         <div class="hint">
-          Paste the code into any .html file and open it in a browser or inside WebView / Mini App.
+          Paste the code into any .html file (or just upload it to Vercel) — no extra CSS or JS needed.
         </div>
       </div>
     </div>
@@ -194,154 +195,307 @@
 <script>
 (function(){
 
-  function getTranslations(lang, currency){
-    if(lang === 'es'){
-      return {
-        langAttr: 'es',
-        dir: 'ltr',
-        title: 'Generador de patrón de apuestas',
-        subtitle: 'Importes de apuestas y número de giros aleatorios. Si la apuesta total es alta, solo se usa 1 giro.',
-        budgetLabel: 'Presupuesto (' + currency + ')',
-        buttonText: 'Obtener estrategia',
-        totalBetLabel: 'Apuesta total:',
-        spinsLabel: 'Giros:',
-        footer: function(total, budget){
-          return 'Total: ' + total + ' ' + currency + ' — Presupuesto: ' + budget + ' ' + currency;
-        },
-        alertBudget: 'Introduce un presupuesto válido.'
-      };
-    }
-    if(lang === 'ar'){
-      return {
-        langAttr: 'ar',
-        dir: 'rtl',
-        title: 'مولّد نمط الرهانات',
-        subtitle: 'مبالغ رهان عشوائية وعدد لفّات متغيّر. إذا كان إجمالي الرهان كبيرًا، يتم استخدام لفّة واحدة فقط.',
-        budgetLabel: 'الميزانية (' + currency + ')',
-        buttonText: 'الحصول على الإستراتيجية',
-        totalBetLabel: 'إجمالي الرهان:',
-        spinsLabel: 'عدد اللفات:',
-        footer: function(total, budget){
-          return 'الإجمالي: ' + total + ' ' + currency + ' — الميزانية: ' + budget + ' ' + currency;
-        },
-        alertBudget: 'أدخل ميزانية صحيحة من فضلك.'
-      };
-    }
-    // default English
-    return {
+  const translations = {
+    en: {
       langAttr: 'en',
       dir: 'ltr',
       title: 'Bet Pattern Generator',
       subtitle: 'Random bet amounts and spins. If the total bet is high, only 1 spin is used.',
-      budgetLabel: 'Budget (' + currency + ')',
+      budgetLabel: 'Budget',
       buttonText: 'Get strategy',
       totalBetLabel: 'Total bet:',
       spinsLabel: 'Spins:',
-      footer: function(total, budget){
-        return 'Total: ' + total + ' ' + currency + ' — Budget: ' + budget + ' ' + currency;
-      },
+      footerPrefix: 'Total:',
+      footerBudgetLabel: 'Budget',
       alertBudget: 'Please enter a valid budget.'
-    };
-  }
+    },
+    es: {
+      langAttr: 'es',
+      dir: 'ltr',
+      title: 'Generador de patrón de apuestas',
+      subtitle: 'Importes de apuestas y número de giros aleatorios. Si la apuesta total es alta, solo se usa 1 giro.',
+      budgetLabel: 'Presupuesto',
+      buttonText: 'Obtener estrategia',
+      totalBetLabel: 'Apuesta total:',
+      spinsLabel: 'Giros:',
+      footerPrefix: 'Total:',
+      footerBudgetLabel: 'Presupuesto',
+      alertBudget: 'Introduce un presupuesto válido.'
+    },
+    ar: {
+      langAttr: 'ar',
+      dir: 'rtl',
+      title: 'مولّد نمط الرهانات',
+      subtitle: 'مبالغ رهان عشوائية وعدد لفّات متغيّر. إذا كان إجمالي الرهان كبيرًا، يتم استخدام لفّة واحدة فقط.',
+      budgetLabel: 'الميزانية',
+      buttonText: 'الحصول على الإستراتيجية',
+      totalBetLabel: 'إجمالي الرهان:',
+      spinsLabel: 'عدد اللفات:',
+      footerPrefix: 'الإجمالي:',
+      footerBudgetLabel: 'الميزانية',
+      alertBudget: 'أدخل ميزانية صحيحة من فضلك.'
+    }
+  };
 
   function buildPredictorCode(lang, currency, defaultBudget, highThreshold, minSpins, maxSpins){
-    var t = getTranslations(lang, currency);
+    const t = translations[lang] || translations.en;
 
-    var code = '<!doctype html>\\n'
-      + '<html lang="' + t.langAttr + '" dir="' + t.dir + '">\\n'
-      + '<head>\\n'
-      + '  <meta charset="utf-8" />\\n'
-      + '  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />\\n'
-      + '  <title>' + t.title + '</title>\\n'
-      + '  <style>\\n'
-      + '    :root{--bg:#071427;--panel:#0f1724;--accent:#18a0fb;--muted:#9fb0c9;}\\n'
-      + '    html,body{margin:0;height:100%;background:#071427;color:#e6eef8;font-family:system-ui,-apple-system,\\"Segoe UI\\",Roboto,\\"Helvetica Neue\\",Arial,sans-serif;-webkit-font-smoothing:antialiased;}\\n'
-      + '    .wrap{min-height:100%;display:flex;justify-content:center;padding:16px;}\\n'
-      + '    .panel{width:100%;max-width:420px;background:#0f1724;border-radius:16px;padding:18px 16px 20px;box-shadow:0 10px 40px rgba(0,0,0,.7);}\\n'
-      + '    h1{margin:0;font-size:19px;color:var(--accent);}\\n'
-      + '    .subtitle{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;}\\n'
-      + '    .controls{margin-top:16px;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}\\n'
-      + '    label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px;}\\n'
-      + '    input[type=number]{padding:11px 10px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,.06);color:#e5e7eb;font-weight:600;width:140px;font-size:14px;}\\n'
-      + '    input:focus{outline:none;box-shadow:0 0 0 1px var(--accent);}\\n'
-      + '    .btn{padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(180deg,var(--accent),#0b84d6);color:#042129;font-weight:700;cursor:pointer;font-size:15px;width:100%;}\\n'
-      + '    .btn:active{transform:translateY(1px);}\\n'
-      + '    .output{margin-top:18px;padding:14px 10px 6px;border-radius:14px;background:rgba(255,255,255,0.02);display:none;}\\n'
-      + '    .list{display:flex;flex-direction:column;gap:10px;}\\n'
-      + '    .item{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;}\\n'
-      + '    .label{font-size:15px;font-weight:800;color:#ffffff;}\\n'
-      + '    .meta{font-size:13px;color:#dbeafe;font-weight:700;background:rgba(24,160,251,0.12);border-radius:999px;padding:4px 10px;white-space:nowrap;}\\n'
-      + '    .footer{text-align:center;margin-top:10px;font-size:12px;color:var(--muted);}\\n'
-      + '    @media(max-width:600px){.wrap{padding:12px}.panel{padding:16px 14px 18px}h1{font-size:18px}.controls{flex-direction:column;align-items:stretch}input[type=number]{width:100%}.btn{width:100%;font-size:16px;padding:13px 16px}.item{padding:10px}.label{font-size:15px}.meta{font-size:13px}}\\n'
-      + '  </style>\\n'
-      + '</head>\\n'
-      + '<body>\\n'
-      + '<div class="wrap">\\n'
-      + '  <div class="panel">\\n'
-      + '    <h1>' + t.title + '</h1>\\n'
-      + '    <div class="subtitle">' + t.subtitle + '</div>\\n'
-      + '    <div class="controls">\\n'
-      + '      <div style="display:flex;flex-direction:column;width:100%;">\\n'
-      + '        <label for="budget">' + t.budgetLabel + '</label>\\n'
-      + '        <input id="budget" type="number" value="' + defaultBudget + '" min="1" />\\n'
-      + '      </div>\\n'
-      + '      <button id="gen" class="btn">' + t.buttonText + '</button>\\n'
-      + '    </div>\\n'
-      + '    <div id="output" class="output">\\n'
-      + '      <div id="list" class="list"></div>\\n'
-      + '      <div id="footer" class="footer"></div>\\n'
-      + '    </div>\\n'
-      + '  </div>\\n'
-      + '</div>\\n'
-      + '<script>\\n'
-      + '(function(){\\n'
-      + '  const CURRENCY = "' + currency + '";\\n'
-      + '  const HIGH_BET_THRESHOLD = ' + highThreshold + ';\\n'
-      + '  const MIN_SPINS = ' + minSpins + ';\\n'
-      + '  const MAX_SPINS = ' + maxSpins + ';\\n'
-      + '  function randomUnique5(){const s=new Set();while(s.size<5){s.add(Math.floor(Math.random()*100)+10);}return Array.from(s);}\\n'
-      + '  function computePattern(budget){\\n'
-      + '    let raw=randomUnique5();\\n'
-      + '    let sumRaw=raw.reduce((a,b)=>a+b,0);\\n'
-      + '    let scaled=raw.map(v=>v/sumRaw*budget);\\n'
-      + '    let rounded=scaled.map(v=>Math.floor(v));\\n'
-      + '    let diff=budget-rounded.reduce((a,b)=>a+b,0);\\n'
-      + '    while(diff>0){let i=Math.floor(Math.random()*5);rounded[i]++;diff--;}\\n'
-      + '    let used=new Set();\\n'
-      + '    for(let i=0;i<5;i++){while(used.has(rounded[i])){rounded[i]++;}used.add(rounded[i]);}\\n'
-      + '    for(let i=rounded.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rounded[i],rounded[j]]=[rounded[j],rounded[i]];}\\n'
-      + '    return rounded;\\n'
-      + '  }\\n'
-      + '  function generateSpins(sum){if(sum>HIGH_BET_THRESHOLD)return 1;return Math.floor(Math.random()*(MAX_SPINS-MIN_SPINS+1))+MIN_SPINS;}\\n'
-      + '  function footerText(total,budget){return "' + t.footer('{TOTAL}','{BUDGET}')
-            .replace('{TOTAL}','\"+total+\"')
-            .replace('{BUDGET}','\"+budget+\"') + '";}\\n'
-      + '  function render(pattern,budget){\\n'
-      + '    const list=document.getElementById("list");\\n'
-      + '    const out=document.getElementById("output");\\n'
-      + '    const footer=document.getElementById("footer");\\n'
-      + '    list.innerHTML="";\\n'
-      + '    for(let i=0;i<5;i++){\\n'
-      + '      const total=pattern[i];\\n'
-      + '      const spins=generateSpins(total);\\n'
-      + '      const div=document.createElement("div");div.className="item";\\n'
-      + '      const label=document.createElement("div");label.className="label";label.textContent="' + t.totalBetLabel + ' " + total + " " + CURRENCY;\\n'
-      + '      const meta=document.createElement("div");meta.className="meta";meta.textContent="' + t.spinsLabel + ' " + spins;\\n'
-      + '      div.appendChild(label);div.appendChild(meta);list.appendChild(div);\\n'
-      + '    }\\n'
-      + '    footer.textContent=footerText(pattern.reduce((a,b)=>a+b,0),budget);\\n'
-      + '    out.style.display="block";\\n'
-      + '  }\\n'
-      + '  document.getElementById("gen").addEventListener("click",function(){\\n'
-      + '    const budget=parseInt(document.getElementById("budget").value)||0;\\n'
-      + '    if(budget<=0){alert("' + t.alertBudget + '");return;}\\n'
-      + '    const pattern=computePattern(budget);\\n'
-      + '    render(pattern,budget);\\n'
-      + '  });\\n'
-      + '})();\\n'
-      + '<\\/script>\\n'
-      + '</body>\\n'
-      + '</html>\\n';
+    const code = `<!doctype html>
+<html lang="${t.langAttr}" dir="${t.dir}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>${t.title}</title>
+  <style>
+    :root{
+      --bg:#071427;
+      --panel:#0f1724;
+      --accent:#18a0fb;
+      --muted:#9fb0c9;
+    }
+    html,body{
+      margin:0;
+      height:100%;
+      background:#071427;
+      color:#e6eef8;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    .wrap{
+      min-height:100%;
+      display:flex;
+      justify-content:center;
+      padding:16px;
+    }
+    .panel{
+      width:100%;
+      max-width:420px;
+      background:#0f1724;
+      border-radius:16px;
+      padding:18px 16px 20px;
+      box-shadow:0 10px 40px rgba(0,0,0,.7);
+    }
+    h1{
+      margin:0;
+      font-size:19px;
+      color:var(--accent);
+    }
+    .subtitle{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+      line-height:1.5;
+    }
+    .controls{
+      margin-top:16px;
+      display:flex;
+      gap:10px;
+      align-items:flex-end;
+      flex-wrap:wrap;
+    }
+    label{
+      font-size:13px;
+      font-weight:600;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    input[type=number]{
+      padding:11px 10px;
+      border-radius:10px;
+      background:var(--panel);
+      border:1px solid rgba(255,255,255,.06);
+      color:#e5e7eb;
+      font-weight:600;
+      width:140px;
+      font-size:14px;
+    }
+    input:focus{
+      outline:none;
+      box-shadow:0 0 0 1px var(--accent);
+    }
+    .btn{
+      padding:12px 16px;
+      border:none;
+      border-radius:12px;
+      background:linear-gradient(180deg,var(--accent),#0b84d6);
+      color:#042129;
+      font-weight:700;
+      cursor:pointer;
+      font-size:15px;
+      width:100%;
+    }
+    .btn:active{transform:translateY(1px);}
+    .output{
+      margin-top:18px;
+      padding:14px 10px 6px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.02);
+      display:none;
+    }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .item{
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.05);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .label{
+      font-size:15px;
+      font-weight:800;
+      color:#ffffff;
+    }
+    .meta{
+      font-size:13px;
+      color:#dbeafe;
+      font-weight:700;
+      background:rgba(24,160,251,0.12);
+      border-radius:999px;
+      padding:4px 10px;
+      white-space:nowrap;
+    }
+    .footer{
+      text-align:center;
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    @media(max-width:600px){
+      .wrap{padding:12px;}
+      .panel{padding:16px 14px 18px;}
+      h1{font-size:18px;}
+      .controls{flex-direction:column;align-items:stretch;}
+      input[type=number]{width:100%;}
+      .btn{width:100%;font-size:16px;padding:13px 16px;}
+      .item{padding:10px;}
+      .label{font-size:15px;}
+      .meta{font-size:13px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <h1>${t.title}</h1>
+      <div class="subtitle">${t.subtitle}</div>
+
+      <div class="controls">
+        <div style="display:flex;flex-direction:column;width:100%;">
+          <label for="budget">${t.budgetLabel} (${currency})</label>
+          <input id="budget" type="number" value="${defaultBudget}" min="1" />
+        </div>
+        <button id="gen" class="btn">${t.buttonText}</button>
+      </div>
+
+      <div id="output" class="output">
+        <div id="list" class="list"></div>
+        <div id="footer" class="footer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var CURRENCY = "${currency}";
+      var HIGH_BET_THRESHOLD = ${highThreshold};
+      var MIN_SPINS = ${minSpins};
+      var MAX_SPINS = ${maxSpins};
+
+      function randomUnique5(){
+        var s = new Set();
+        while(s.size < 5){
+          s.add(Math.floor(Math.random()*100) + 10);
+        }
+        return Array.from(s);
+      }
+
+      function computePattern(budget){
+        var raw = randomUnique5();
+        var sumRaw = raw.reduce(function(a,b){ return a+b; }, 0);
+        var scaled = raw.map(function(v){ return v / sumRaw * budget; });
+        var rounded = scaled.map(function(v){ return Math.floor(v); });
+        var diff = budget - rounded.reduce(function(a,b){ return a+b; }, 0);
+
+        while(diff > 0){
+          var i = Math.floor(Math.random()*5);
+          rounded[i]++;
+          diff--;
+        }
+
+        var used = new Set();
+        for(var j=0;j<5;j++){
+          while(used.has(rounded[j])){
+            rounded[j]++;
+          }
+          used.add(rounded[j]);
+        }
+
+        for(var k=rounded.length-1;k>0;k--){
+          var idx = Math.floor(Math.random()*(k+1));
+          var tmp = rounded[k];
+          rounded[k] = rounded[idx];
+          rounded[idx] = tmp;
+        }
+        return rounded;
+      }
+
+      function generateSpins(sum){
+        if(sum > HIGH_BET_THRESHOLD) return 1;
+        return Math.floor(Math.random() * (MAX_SPINS - MIN_SPINS + 1)) + MIN_SPINS;
+      }
+
+      function render(pattern, budget){
+        var list = document.getElementById("list");
+        var out = document.getElementById("output");
+        var footer = document.getElementById("footer");
+
+        list.innerHTML = "";
+
+        for(var i=0;i<5;i++){
+          var total = pattern[i];
+          var spins = generateSpins(total);
+
+          var div = document.createElement("div");
+          div.className = "item";
+
+          var label = document.createElement("div");
+          label.className = "label";
+          label.textContent = "${t.totalBetLabel} " + total + " " + CURRENCY;
+
+          var meta = document.createElement("div");
+          meta.className = "meta";
+          meta.textContent = "${t.spinsLabel} " + spins;
+
+          div.appendChild(label);
+          div.appendChild(meta);
+          list.appendChild(div);
+        }
+
+        var totalAll = pattern.reduce(function(a,b){ return a+b; }, 0);
+        footer.textContent = "${t.footerPrefix} " + totalAll + " " + CURRENCY + " — ${t.footerBudgetLabel}: " + budget + " " + CURRENCY;
+
+        out.style.display = "block";
+      }
+
+      document.getElementById("gen").addEventListener("click", function(){
+        var budget = parseInt(document.getElementById("budget").value, 10) || 0;
+        if(budget <= 0){
+          alert("${t.alertBudget}");
+          return;
+        }
+        var pattern = computePattern(budget);
+        render(pattern, budget);
+      });
+    })();
+  </script>
+</body>
+</html>`;
 
     return code;
   }
@@ -354,10 +508,10 @@
   generateBtn.addEventListener('click', function(){
     const lang = document.getElementById('lang').value;
     const currency = (document.getElementById('currency').value || 'USD').toUpperCase();
-    const defaultBudget = parseInt(document.getElementById('defaultBudget').value) || 50;
-    const highThreshold = parseInt(document.getElementById('highThreshold').value) || 15;
-    const minSpins = parseInt(document.getElementById('minSpins').value) || 2;
-    const maxSpins = parseInt(document.getElementById('maxSpins').value) || 7;
+    const defaultBudget = parseInt(document.getElementById('defaultBudget').value, 10) || 50;
+    const highThreshold = parseInt(document.getElementById('highThreshold').value, 10) || 15;
+    const minSpins = parseInt(document.getElementById('minSpins').value, 10) || 2;
+    const maxSpins = parseInt(document.getElementById('maxSpins').value, 10) || 7;
 
     const code = buildPredictorCode(lang, currency, defaultBudget, highThreshold, minSpins, maxSpins);
     output.value = code;
@@ -376,8 +530,12 @@
   });
 
   copyBtn.addEventListener('click', function(){
-    output.select();
-    document.execCommand('copy');
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(output.value || '');
+    } else {
+      output.select();
+      document.execCommand('copy');
+    }
   });
 
 })();
