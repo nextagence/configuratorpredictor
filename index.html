@@ -389,7 +389,9 @@
     lines.push('      render(pattern, budget);');
     lines.push('    });');
     lines.push('  })();');
-    lines.push('  </script>');
+    // ✅ должно быть так
+    lines.push('  </scr' + 'ipt>');
+
     lines.push('</body>');
     lines.push('</html>');
 
